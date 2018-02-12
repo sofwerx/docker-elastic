@@ -1,79 +1,81 @@
 ---
 version: '3'
 services:
-  # The environment variable "TAG" is used throughout this file to
+  # The environment variable "ELASTICSEARCH_VERSION" is used throughout this file to
   # specify the version of the images to run. The default is set in the
   # '.env' file in this folder. It can be overridden with any normal
   # technique for setting environment variables, for example:
   #
-  #   TAG=6.0.0-beta1 docker-compose up
+  #   ELASTICSEARCH_VERSION=6.0.0-beta1 docker-compose up
   #
   # REF: https://docs.docker.com/compose/compose-file/#variable-substitution
   #
   # Also be sure to set the ELASTIC_VERSION variable. For released versions,
-  # ${TAG} and ${ELASTIC_VERSION} will be identical, but for pre-release
-  # versions, ${TAG} might contain an extra build identifier, like
+  # ${ELASTICSEARCH_VERSION} and ${ELASTIC_VERSION} will be identical, but for pre-release
+  # versions, ${ELASTICSEARCH_VERSION} might contain an extra build identifier, like
   # "6.0.0-beta1-3eab5b40", so a full invocation might look like:
   #
-  #   ELASTIC_VERSION=6.0.0-beta1 TAG=6.0.0-beta1-3eab5b40 docker-compose up
+  #   ELASTIC_VERSION=6.0.0-beta1 ELASTICSEARCH_VERSION=6.0.0-beta1-3eab5b40 docker-compose up
   #
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:${TAG}
+    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:${ELASTICSEARCH_VERSION}
     container_name: elasticsearch
     environment: ['http.host=0.0.0.0', 'transport.host=127.0.0.1', 'ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
     ports: ['127.0.0.1:9200:9200']
-    networks: ['stack']
+#    networks: ['stack']
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:${TAG}
+    image: docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
     container_name: kibana
     environment:
       - ELASTICSEARCH_USERNAME=kibana
       - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
     ports: ['127.0.0.1:5601:5601']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch']
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.logstash
+    image: local/logstash:${ELASTICSEARCH_VERSION}
     container_name: logstash
     environment:
       - 'xpack.monitoring.elasticsearch.password=${ELASTIC_PASSWORD}'
-    # Provide a simple pipeline configuration for Logstash with a bind-mounted file.
-    volumes:
-      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch', 'setup_logstash']
 
   auditbeat:
-    image: docker.elastic.co/beats/auditbeat:${TAG}
+    image: docker.elastic.co/beats/auditbeat:${ELASTICSEARCH_VERSION}
     container_name: auditbeat
     command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
     # Auditbeat must run in the main process namespace.
     pid: host
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch']
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:${TAG}
+    image: docker.elastic.co/beats/filebeat:${ELASTICSEARCH_VERSION}
     container_name: filebeat
     command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
     # If the host system has logs at "/var/log", mount them at "/mnt/log"
     # inside the container, where Filebeat can find them.
     # volumes: ['/var/log:/mnt/log:ro']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch', 'setup_filebeat']
 
   heartbeat:
-    image: docker.elastic.co/beats/heartbeat:${TAG}
+    image: docker.elastic.co/beats/heartbeat:${ELASTICSEARCH_VERSION}
     container_name: heartbeat
     command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch', 'setup_heartbeat']
 
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:${TAG}
+    image: docker.elastic.co/beats/metricbeat:${ELASTICSEARCH_VERSION}
     container_name: metricbeat
     # The commented sections below enable Metricbeat to monitor the Docker host,
     # rather than the Metricbeat container. It's problematic with Docker for
@@ -84,11 +86,11 @@ services:
     #   - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
     #   - /:/hostfs:ro
     command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}' # -system.hostfs=/hostfs
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch', 'setup_metricbeat']
 
   packetbeat:
-    image: docker.elastic.co/beats/packetbeat:${TAG}
+    image: docker.elastic.co/beats/packetbeat:${ELASTICSEARCH_VERSION}
     container_name: packetbeat
     # Packetbeat needs some elevated privileges to capture network traffic.
     # We'll grant them with POSIX capabilities.
@@ -105,87 +107,114 @@ services:
     depends_on: ['elasticsearch']
 
   apm_server:
-    image: docker.elastic.co/apm/apm-server:${TAG}
+    image: docker.elastic.co/apm/apm-server:${ELASTICSEARCH_VERSION}
     container_name: apm_server
     ports: ['127.0.0.1:8200:8200']
-    networks: ['stack']
+#    networks: ['stack']
     command: -e -E 'output.elasticsearch.password=${ELASTIC_PASSWORD}'
     depends_on: ['elasticsearch','setup_apm_server']
 
   # Run a short-lived container to set up Logstash.
   setup_logstash:
-    image: centos:7
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_logstash
+    image: local/setup_logstash:${ELASTICSEARCH_VERSION}
     container_name: setup_logstash
-    volumes: ['./scripts/setup-logstash.sh:/usr/local/bin/setup-logstash.sh:ro']
-    # The script may have CR/LF line endings if using Docker for Windows, so
-    # make sure that they don't confuse Bash.
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-logstash.sh | tr -d "\r" | bash']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch']
 
   setup_kibana:
-    image: centos:7
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_kibana
+    image: local/setup_kibanan:${ELASTICSEARCH_VERSION}
     container_name: setup_kibana
-    volumes: ['./scripts/setup-kibana.sh:/usr/local/bin/setup-kibana.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-kibana.sh | tr -d "\r" | bash']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch']
 
   setup_auditbeat:
-    image: docker.elastic.co/beats/auditbeat:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_auditbeat
+    image: local/auditbeat:${ELASTICSEARCH_VERSION}
     container_name: setup_auditbeat
-    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s auditbeat']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+    cap_add:
+      - AUDIT_CONTROL
+      - AUDIT_READ
+    # Auditbeat must run in the main process namespace.
+    pid: host
+#    networks: ['stack']
     depends_on: ['kibana']
 
   setup_filebeat:
-    image: docker.elastic.co/beats/filebeat:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_filebeat
+    image: local/filebeat:${ELASTICSEARCH_VERSION}
     container_name: setup_filebeat
-    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s filebeat']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['kibana']
 
   setup_heartbeat:
-    image: docker.elastic.co/beats/heartbeat:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_heartbeat
+    image: local/heartbeat:${ELASTICSEARCH_VERSION}
     container_name: setup_heartbeat
-    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s heartbeat']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['kibana']
 
   setup_metricbeat:
-    image: docker.elastic.co/beats/metricbeat:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_metricbeat
+    image: local/metricbeat:${ELASTICSEARCH_VERSION}
     container_name: setup_metricbeat
-    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s metricbeat']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['kibana']
 
   setup_packetbeat:
-    image: docker.elastic.co/beats/packetbeat:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_packetbeat
+    image: local/packetbeat:${ELASTICSEARCH_VERSION}
     container_name: setup_packetbeat
     cap_add: ['NET_RAW', 'NET_ADMIN']
-    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s packetbeat']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['kibana']
 
   setup_apm_server:
-    image: docker.elastic.co/apm/apm-server:${TAG}
+    build:
+      context: .
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.setup_apm_server
+    image: local/apm-server:${ELASTICSEARCH_VERSION}
     container_name: setup_apm_server
-    volumes: ['./scripts/setup-beat.sh:/usr/local/bin/setup-beat.sh:ro']
-    command: ['/bin/bash', '-c', 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s apm-server']
     environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
-    networks: ['stack']
+#    networks: ['stack']
     depends_on: ['elasticsearch','kibana']
 
-networks: {stack: {}}
+#networks: {stack: {}}

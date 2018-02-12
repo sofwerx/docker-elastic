@@ -1,0 +1,5 @@
+FROM centos:7
+
+ADD ./scripts/setup-kibana.sh /usr/local/bin/setup-kibana.sh
+
+CMD /bin/bash -c 'cat /usr/local/bin/setup-kibana.sh | tr -d "\r" | bash'

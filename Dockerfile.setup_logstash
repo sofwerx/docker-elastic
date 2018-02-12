@@ -1,0 +1,6 @@
+FROM centos:7
+
+ADD ./scripts/setup-logstash.sh /usr/local/bin/setup-logstash.sh
+
+CMD /bin/bash -c 'cat /usr/local/bin/setup-logstash.sh | tr -d "\r" | bash'
+

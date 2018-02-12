@@ -1,0 +1,6 @@
+ARG ELASTICSEARCH_VERSION
+FROM docker.elastic.co/apm/apm-server:${ELASTICSEARCH_VERSION}
+
+ADD ./scripts/setup-beat.sh /usr/local/bin/setup-beat.sh
+
+CMD /bin/bash -c 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s apm-server'
