@@ -1,0 +1,8 @@
+ARG ELASTICSEARCH_VERSION
+FROM docker.elastic.co/beats/metricbeat:${ELASTICSEARCH_VERSION}
+
+ADD ./config/logstash.conf /usr/share/logstash/pipeline/logstash.conf
+
+ADD ./config/metricbeat.yml metricbeat.yml
+ADD ./config/modules.d/ modules.d/
+

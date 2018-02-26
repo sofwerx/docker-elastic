@@ -3,4 +3,6 @@ FROM docker.elastic.co/beats/metricbeat:${ELASTICSEARCH_VERSION}
 
 ADD ./scripts/setup-beat.sh /usr/local/bin/setup-beat.sh
 
+ADD ./config/metricbeat.yml metricbeat.yml
+
 CMD /bin/bash -c 'cat /usr/local/bin/setup-beat.sh | tr -d "\r" | bash -s metricbeat'
