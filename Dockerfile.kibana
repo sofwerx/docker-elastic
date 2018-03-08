@@ -1,0 +1,4 @@
+ARG ELASTICSEARCH_VERSION
+FROM docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
+
+RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.2/sentinl-v6.2.2.zip

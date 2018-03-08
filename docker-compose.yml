@@ -25,11 +25,25 @@ services:
 #    networks: ['stack']
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
+    build:
+      context: docker-elastic/
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.kibana
+    image: sofwerx/kibana
+    hostname: kibana
     container_name: kibana
     environment:
-      - ELASTICSEARCH_USERNAME=kibana
-      - ELASTICSEARCH_PASSWORD=${ELASTIC_PASSWORD}
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD}
+      SENTINEL_SETTINGS_AUTHENTICATION_ENABLED: 'true'
+      SENTINEL_SETTINGS_AUTHENTICATION_IMPERSONATE: 'true'
+      SENTINEL_SETTINGS_AUTHENTICATION_USERNAME: elastic
+      SENTINEL_SETTINGS_AUTHENTICATION_PASSWORD: ${ELASTIC_PASSWORD}
+      XPACK_MONITORING_ELASTICSEARCH_URL: http://elasticsearch:9200
+      XPACK_MONITORING_ELASTICSEARCH_USERNAME: elastic
+      XPACK_MONITORING_ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD}
     ports: ['127.0.0.1:5601:5601']
 #    networks: ['stack']
     depends_on: ['elasticsearch']
