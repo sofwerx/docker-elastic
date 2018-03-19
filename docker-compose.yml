@@ -262,6 +262,22 @@ services:
 #    networks: ['stack']
     depends_on: ['elasticsearch','kibana']
 
+  elasticsearch-hq:
+    image: elastichq/elasticsearch-hq
+    container_name: elasticsearch-hq
+    hostname: elasticsearch-hq
+    environment:
+      SCHEME: http
+      USERNAME: ${ELASTIC_USER}
+      PASSWORD: ${ELASTIC_PASSWORD}
+      ES_HOST: elasticsearch
+      ES_PORT: 9200
+      PORT: 5000
+    ports:
+      - localhost:9199:5000
+#    networks: ['stack']
+    depends_on: ['elasticsearch']
+
   cerebro:
     build:
       context: .
