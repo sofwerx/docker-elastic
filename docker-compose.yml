@@ -262,4 +262,18 @@ services:
 #    networks: ['stack']
     depends_on: ['elasticsearch','kibana']
 
+  cerebro:
+    build:
+      context: .
+      args:
+        CEREBRO_VERSION: ${CEREBRO_VERSION}
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
+      dockerfile: Dockerfile.cerebro
+    image: local/cerebro:${CEREBRO_VERSION}
+    container_name: cerebro
+    ports:
+      - "localhost:9000:9000"
+#    networks: ['stack']
+    depends_on: ['elasticsearch']
+
 #networks: {stack: {}}
