@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -eo pipefail
-
 mkdir -p /root/.curator
 
 cat <<EOF > /root/.curator/curator.yml
@@ -51,6 +49,7 @@ actions:
 EOF
 
 cd /root/.curator
+
 while true; do
   curator --config curator.yml delete.yml
   sleep ${SLEEP:-300}
