@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -exo pipefail
+set -eo pipefail
 
 mkdir -p /root/.curator
 
@@ -20,7 +20,7 @@ client:
   master_only: False
 
 logging:
-  loglevel: DEBUG
+  loglevel: INFO
   logfile:
   logformat: default
   blacklist: ['elasticsearch', 'urllib3']
@@ -50,6 +50,7 @@ actions:
         unit_count: 7
 EOF
 
+cd /root/.curator
 while true; do
   curator --config curator.yml delete.yml
   sleep ${SLEEP:-300}
