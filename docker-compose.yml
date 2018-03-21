@@ -292,4 +292,13 @@ services:
 #    networks: ['stack']
     depends_on: ['elasticsearch']
 
+  curator:
+    build:
+      context: .
+      dockerfile: Dockerfile.curator
+    image: local/curator
+    container_name: curator
+    depends_on: ['elasticsearch']
+
 #networks: {stack: {}}
+
