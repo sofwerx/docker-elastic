@@ -1,0 +1,17 @@
+FROM ubuntu:16.04
+
+RUN sed -i -e 's/archive.ubuntu.com/us.archive.ubuntu.com/g' /etc/apt/sources.list
+
+RUN apt-get update
+RUN apt-get install -y curl
+RUN apt-get update
+RUN apt-get install -y nodejs python-pip build-essential jq iputils-ping
+RUN pip install --upgrade pip
+
+RUN pip install elasticsearch-curator
+
+RUN curator --version
+
+ADD curator.sh /curator.sh
+
+CMD /curator.sh
