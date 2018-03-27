@@ -161,12 +161,12 @@ services:
   setup_kibana:
     build:
       context: .
-      args:
-        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION}
       dockerfile: Dockerfile.setup_kibana
     image: local/setup_kibanan:${ELASTICSEARCH_VERSION}
     container_name: setup_kibana
-    environment: ['ELASTIC_PASSWORD=${ELASTIC_PASSWORD}']
+    environment:
+        ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+        ELASTICSEARCH_LICENSE: ${ELASTICSEARCH_LICENSE}
 #    networks: ['stack']
     depends_on: ['elasticsearch']
 
