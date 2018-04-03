@@ -2,3 +2,7 @@ ARG ELASTICSEARCH_VERSION
 FROM docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
 
 RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.2/sentinl-v6.2.2.zip
+
+RUN yum install -y net-tools ss
+RUN curl -sL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2  | tar xvjf - -C /tmp/ \
+ && mv phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs
