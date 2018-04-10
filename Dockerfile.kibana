@@ -4,4 +4,11 @@ FROM docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
 RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-6.2.2/sentinl-v6.2.2.zip
 RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.27/logtrail-6.2.2-0.1.27.zip
 
+USER root
+RUN yum install -y net-tools ss bzip2
+RUN curl -sL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2  | tar xvjf - -C /tmp/ \
+ && mv /tmp/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
+ && rm -fr /tmp/phantomjs-1.9.8-linux-x86_64
+USER kibana
+
 ADD logtrail.json ./plugins/logtrail/
