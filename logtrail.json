@@ -1,0 +1,173 @@
+{
+  "version" : 1,
+  "index_patterns" : [
+    {      
+      "es": {
+        "default_index": "alexa-music-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "device",
+            "program": "message",
+            "message": "song"
+        },
+        "message_format": "{{{song}}} by {{{artist}}} from album {{{album}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {      
+      "es": {
+        "default_index": "alexa-trigger-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "device",
+            "program": "target",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {      
+      "es": {
+        "default_index": "motion"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "action",
+            "program": "action",
+            "message": "args"
+        },
+        "message_format": "{{{args}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {      
+      "es": {
+        "default_index": "domoticz"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "@timestamp",
+            "hostname" : "_index",
+            "program": "SUBJECT",
+            "message": "MESSAGE"
+        },
+        "message_format": "{{{MESSAGE}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {      
+      "es": {
+        "default_index": "minicam-motion*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "time",
+            "hostname" : "device",
+            "program": "action",
+            "message": "location"
+        },
+        "message_format": "{{{location}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {      
+      "es": {
+        "default_index": "persondetect*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "time",
+            "hostname" : "LocationID",
+            "program": "DeviceID",
+            "message": "Count"
+        },
+        "message_format": "{{{Count}}} {{{DeviceTime}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {      
+      "es": {
+        "default_index": "plug*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "device",
+            "program": "",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    }
+  ]
+}
