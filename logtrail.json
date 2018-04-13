@@ -192,6 +192,126 @@
       },
       "color_mapping" : {
       }
+    },
+    {
+      "es": {
+        "default_index": "webcam-pcap-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "",
+            "program": "",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {
+      "es": {
+        "default_index": "safehouse-ap-devices-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "",
+            "program": "",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {
+      "es": {
+        "default_index": "safehouse-ap-ssh-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "",
+            "program": "",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {
+      "es": {
+        "default_index": "plc-remote-access-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "",
+            "program": "",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
+    },
+    {
+      "es": {
+        "default_index": "plc-remote-remote-access-*"
+      },
+      "tail_interval_in_seconds": 5,
+      "es_index_time_offset_in_seconds": 0,
+      "display_timezone": "local",
+      "display_timestamp_format": "MMM DD HH:mm:ss",
+      "max_buckets": 500,
+      "default_time_range_in_days" : 0,
+      "max_hosts": 100,
+      "max_events_to_keep_in_viewer": 5000,
+      "fields" : {
+        "mapping" : {
+            "timestamp" : "timestamp",
+            "hostname" : "",
+            "program": "",
+            "message": "message"
+        },
+        "message_format": "{{{message}}}"
+      },
+      "color_mapping" : {
+      }
     }
   ]
 }
