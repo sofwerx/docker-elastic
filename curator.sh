@@ -37,30 +37,136 @@ client:
   http_auth: ${ES_USER}:${ES_PASS}
   timeout: 30
   master_only: False
-  aws_region: ${AWS_REGION}
-  aws_sign_request: True
 
 logging:
   loglevel: DEBUG
   logfile:
   logformat: default
-  blacklist: ['elasticsearch', 'urllib3']
+#  blacklist: ['elasticsearch', 'urllib3']
 EOF
 
 cat /root/.curator/curator.yml
 
-cat <<EOF > /root/.curator/snapshot.yml
+cat <<EOF > /root/.curator/safehouse.yml
 ---
 actions:
   1:
     action: snapshot
     description: >-
-      Snapshot selected indices to 'repository' with the snapshot name or name
-      pattern in 'name'.  Use all other options as assigned
+      Snapshot alexa-trigger events from safehouse
     options:
       repository: ${ES_S3_REPOSITORY_NAME}
-      # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-      name: curator-%Y%m%d%H%M%S
+      name: alexa-trigger_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: alexa-trigger
+
+  2:
+    action: snapshot
+    description: >-
+      Snapshot alexa-music events from safehouse
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: alexa-music_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: alexa-music
+
+  3:
+    action: snapshot
+    description: >-
+      Snapshot door-lock events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: door-lock_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: door-lock
+
+  4:
+    action: snapshot
+    description: >-
+      Snapshot domoticz events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: domoticz_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: domoticz
+
+  5:
+    action: snapshot
+    description: >-
+      Snapshot gammarf events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: gammarf_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: gammarf
+
+  6:
+    action: snapshot
+    description: >-
+      Snapshot google-home events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: google-home_%Y%m%d%H%M%S
       continue_if_exception: False
       disable_action: False
       ignore_unavailable: False
@@ -75,7 +181,248 @@ actions:
     filters:
       - filtertype: pattern
         kind: prefix
-        value: webcam-
+        value: google-home
+
+  7:
+    action: snapshot
+    description: >-
+      Snapshot IFTTT events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: ifttt_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: ifttt
+
+  8:
+    action: snapshot
+    description: >-
+      Snapshot logstash events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: logstash_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: logstash
+
+  9:
+    action: snapshot
+    description: >-
+      Snapshot minicam-motion events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: minicam-motion_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: minicam-motion
+
+  10:
+    action: snapshot
+    description: >-
+      Snapshot motion events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: motion_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: motion
+
+  11:
+    action: snapshot
+    description: >-
+      Snapshot pcap events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: pcap_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: pcap
+
+  12:
+    action: snapshot
+    description: >-
+      Snapshot plc-remote-access events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: plc-remote-access_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: plc-remote-access
+
+  13:
+    action: snapshot
+    description: >-
+      Snapshot plug events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: plug_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: plug
+
+  14:
+    action: snapshot
+    description: >-
+      Snapshot safehouse-ap-devices events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: safehouse-ap-devices_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: safehouse-ap-devices
+  15:
+    action: snapshot
+    description: >-
+      Snapshot safehouse-ap-ssh events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: safehouse-ap-ssh_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: safehouse-ap-ssh
+
+  16:
+    action: snapshot
+    description: >-
+      Snapshot watcher events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: watcher_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: watcher
+
+  17:
+    action: snapshot
+    description: >-
+      Snapshot webcam-pcap events
+    options:
+      repository: ${ES_S3_REPOSITORY_NAME}
+      name: webcam-pcap_%Y%m%d%H%M%S
+      continue_if_exception: False
+      disable_action: False
+      ignore_unavailable: False
+      include_global_state: True
+      max_wait: 3600
+      partial: False
+      skip_repo_fs_check: False
+      timeout_override:
+      wait_for_completion: True
+      wait_interval: 10
+    filters:
+      - filtertype: pattern
+        kind: prefix
+        value: webcam-pcap
 EOF
 
 if [ -n "${DELETE_INDEXES}" ]; then
@@ -106,11 +453,9 @@ fi
 
 cd /root/.curator
 
-exec  curator --config curator.yml snapshot.yml --dry-run
-
 while true; do
-
-  #curator --config curator.yml delete.yml
-  sleep ${SLEEP:-300}
+  curator --config curator.yml safehouse.yml
+  sleep ${SLEEP:-86400}
 done
 
+wait
