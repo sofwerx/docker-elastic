@@ -2,7 +2,13 @@
 
 set -euo pipefail
 
-es_url=http://elastic:${ELASTIC_PASSWORD}@elasticsearch:9200
+ELASTIC_PROTO="${ELASTIC_PROTO:-http}"
+ELASTIC_USER="${ELASTIC_USER:-elastic}"
+ELASTIC_PASSWORD="${ELASTIC_PASSWORD:-elastic}"
+ELASTIC_HOST="${ELASTIC_HOST:-elasticsearch}"
+ELASTIC_PORT="${ELASTIC_PORT:-9200}"
+
+es_url="http://${ELASTIC_USER}:${ELASTIC_PASSWORD}@${ELASTIC_HOST}:${ELASTIC_PORT}"
 
 # Wait for Elasticsearch to start up before doing anything.
 until curl -s $es_url -o /dev/null; do
