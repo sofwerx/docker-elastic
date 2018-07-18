@@ -1,15 +1,27 @@
-ARG ELASTICSEARCH_VERSION
+ARG ELASTICSEARCH_VERSION=6.3.0
 FROM docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
-ENV ELASTICSEARCH_VERSION=${ELASTICSEARCH_VERSION}
+ENV ELASTICSEARCH_VERSION=6.3.0
 
 RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-${ELASTICSEARCH_VERSION}/sentinl-v${ELASTICSEARCH_VERSION}.zip
-RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.27/logtrail-${ELASTICSEARCH_VERSION}-0.1.27.zip
+RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.29/logtrail-${ELASTICSEARCH_VERSION}-0.1.29.zip
 
 USER root
 RUN yum install -y net-tools ss bzip2
 RUN curl -sL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2  | tar xvjf - -C /tmp/ \
  && mv /tmp/phantomjs-1.9.8-linux-x86_64/bin/phantomjs /usr/local/bin/phantomjs \
  && rm -fr /tmp/phantomjs-1.9.8-linux-x86_64
-USER kibana
 
-ADD logtrail.json ./plugins/logtrail/
+# Add node.js / npm
+RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
+
+RUN yum -y install nodejs gcc-c++ make
+# Add network visualization
+WORKDIR plugins
+RUN curl -sL https://github.com/dlumbrer/kbn_network/releases/download/6.3.X-1/network_vis.tar.gz | tar xvJf -
+RUN cd network_vis && npm install
+WORKDIR ..
+
+USER kibana
+RUN XPACK_SECURITY_ENABLED=false kibana optimize
+
+ADD orange.json ./plugins/logtrail/logtrail.json

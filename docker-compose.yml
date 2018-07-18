@@ -305,5 +305,15 @@ services:
     container_name: curator
     depends_on: ['elasticsearch']
 
+  skedler:
+    build:
+      context: .
+      dockerfile: Dockerfile.skedler
+    image: local/skedler
+    container: skedler 
+    ports:
+      - "localhost:3000:3000"
+    depends_on: ['elasticsearch']
+
 #networks: {stack: {}}
 

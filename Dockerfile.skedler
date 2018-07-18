@@ -1,0 +1,7 @@
+FROM skedler/reports
+
+ADD skedler.sh /skedler.sh
+
+EXPOSE 3000
+
+CMD /skedler.sh
