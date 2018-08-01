@@ -2,7 +2,7 @@ ARG ELASTICSEARCH_VERSION=6.3.0
 FROM docker.elastic.co/kibana/kibana:${ELASTICSEARCH_VERSION}
 ENV ELASTICSEARCH_VERSION=6.3.0
 
-RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-${ELASTICSEARCH_VERSION}/sentinl-v${ELASTICSEARCH_VERSION}.zip
+#RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sirensolutions/sentinl/releases/download/tag-${ELASTICSEARCH_VERSION}/sentinl-v${ELASTICSEARCH_VERSION}.zip
 RUN /usr/share/kibana/bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.29/logtrail-${ELASTICSEARCH_VERSION}-0.1.29.zip
 
 USER root
@@ -22,6 +22,6 @@ RUN cd network_vis && npm install
 WORKDIR ..
 
 USER kibana
-RUN XPACK_SECURITY_ENABLED=false kibana optimize
+#RUN XPACK_SECURITY_ENABLED=false kibana optimize
 
 ADD orange.json ./plugins/logtrail/logtrail.json
