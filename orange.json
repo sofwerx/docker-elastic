@@ -18,22 +18,13 @@
         "mapping" : {
             "timestamp" : "@timestamp",
             "display_timestamp" : "@timestamp",
-            "hostname" : "hostname",
-            "program": "program",
-            "message": "syslog_message"
+            "hostname" : "host",
+            "program": "type",
+            "message": "message"
         },
-        "message_format": "{{{syslog_message}}}"
+        "message_format": "{{{message}}}"
       },
       "color_mapping" : {
-        "field": "level",
-        "mapping" : {
-          "0": "#ff0000",
-          "1": "#ff3232",
-          "2": "#ff4c4c",
-          "3": "#ff7f24",
-          "4": "#ffb90f",
-          "5": "#a2cd5a"
-        }
       }
     },
     {      
