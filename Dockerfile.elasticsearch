@@ -3,4 +3,4 @@ FROM docker.elastic.co/elasticsearch/elasticsearch-platinum:${ELASTICSEARCH_VERS
 
 # https://artifacts.elastic.co/downloads/elasticsearch-plugins/repository-s3/repository-s3-6.2.3.zip
 RUN ./bin/elasticsearch-plugin install repository-s3
-
+RUN ./bin/elasticsearch-plugin install ingest-attachment
