@@ -2,5 +2,5 @@ ARG ELASTICSEARCH_VERSION
 FROM docker.elastic.co/elasticsearch/elasticsearch-platinum:${ELASTICSEARCH_VERSION}
 
 # https://artifacts.elastic.co/downloads/elasticsearch-plugins/repository-s3/repository-s3-6.2.3.zip
-RUN ./bin/elasticsearch-plugin install repository-s3
-RUN ./bin/elasticsearch-plugin install ingest-attachment
+RUN ./bin/elasticsearch-plugin install --batch repository-s3
+RUN ./bin/elasticsearch-plugin install --batch ingest-attachment
